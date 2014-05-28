@@ -1,0 +1,41 @@
+Those of you that want to know the order of processing for PHPMailer-FE:
+
+* note: discusses only major functionality
+
+- PHPMailer-FE gets handed the form data
+- checks if the form is handing the data as $_GET or $_POST
+  if ANY $_GETS found, PHPMailer-FE aborts.
+- gets the IP address and Remote Host of the browser sending the form data
+- displays the processing image
+- converts all $_POST data as regular PHP variables
+- reads and converts 'default.config.php' (converts all $_POST
+  data as regular PHP variables ... overwrites any previous duplicates)
+- CONDITIONAL:
+  if getenv('HTTP_REFERER') is not blank OR $_POST['referer'] is set:
+  - reads and converts the form config file (converts all $_POST
+    data as regular PHP variables ... overwrites any previous duplicates)
+- processes the Turing test
+- checks if set 'referers' and if the form data submitted is in approved 'referers' ...
+  will exit if not found in list
+- checks email banlist ... will exit if the email address filled in the form is found
+- checks IP/Remote Host banlist ... will exit if the IP address or Remote Host is found
+- processes "required" fields
+- processes file uploads (note: will check for errors and include a field in the email
+  to the recipient if any errors are found)
+- processes local file attachments
+- parses the form data
+- builds the environment report
+- builds and sends the email(s)
+- sends a copy to the $_POST['email'] if that field is available and the field
+  send_email_copy is set
+- sends the email reply on success (if successful) and uses the template file found
+  in $_POST['replyEmailOnSuccess']
+- processes 'default.plugin.php' (NOTE: there should be NO echo or print statements
+  if the default.plugin.php if this is a Flash form or the Flash form will not receive
+  the appropriate return code)
+- processes the form specific plugin (NOTE: there should be NO echo or print statements
+  if the default.plugin.php if this is a Flash form or the Flash form will not receive
+  the appropriate return code)
+- exits if this is a flash form
+- redirects to Thank You for your submission page (either generated page or redirects
+  based on $_POST['redirect'])

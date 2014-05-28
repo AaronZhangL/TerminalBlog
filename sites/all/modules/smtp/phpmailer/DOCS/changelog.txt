@@ -1,0 +1,206 @@
+Version 4.0.5 (October xx, 2009)
+- added ability to stop screen refresh after PHPMailer-FE has processed
+- added optional data sanitize function -- will "clean" all user submitted
+  data and not impact any of the config data
+- added support for PHPMailer-Lite (new product)
+- modified HTML version of email to convert text line endings to proper <br />
+  tags -- better formatted HTML emails
+- now includes three sample forms
+
+Version 4.0.4 (May 24, 2009)
+- wrong source files used for release of 4.0.3 ... sorry for the error
+
+Version 4.0.3 (May 24, 2009)
+- changed the order of display so that the "processing" image displays
+  immediately.
+- fixed potential issue with $_FILES field being blank (generating error)
+- fixed extra attachment (incorrect declaration of array)
+- added attachment error message to email sent to recipient
+- added missing keywords to reserved keyword list
+- added logic to determine if class.phpmailer.php version (different code)
+  and coded PHPMailer-FE to address differences
+- changed logic to handle uploaded attachment(s) and how they are added to
+  an email when class.phpmailer.php is used
+* note: if you use class.phpmailer.php, either select the latest version
+  for PHP4 or for PHP5, use class.phpmailer.php version 5.0.2 or higher
+  * if class.phpmailer.php version 5.0.2 is not released when you download
+  this version of PHPMailer-FE, you can access it from the SVN repository:
+  http://phpmailer.svn.sourceforge.net/viewvc/phpmailer/phpmailer/branches/5.0-dev/
+
+Version 4.0.2 (March 24, 2009)
+- changed how $_POST['referer'] is handled (if it exists) so that it has
+  precedence over the environment variable HTTP_REFERER
+- you can now set the $fixedFromEmail and $fixedFromName from the config files
+- you can now specify to send the emails to the recipient in text only 
+  (default is multi-mime - both text and HTML)
+  * impacts only if using class.phpmailer.php
+- fixed the data.txt issue ... stray code from my testing (removed)
+- enhanced file upload error logic
+- corrected the use of $useEnvRpt instead of the $_POST variable
+- fixed the use of a === (tripe equal signs) on Safe Mode detection
+
+Version 4.0.1 (February 06, 2009)
+- fixed a bug where the flash failed sent message displayed whether you used
+  flash or not
+
+Version 4.0 (January 22, 2009)
+
+  Version 4.0 has several major changes - it now will process attachments from
+  any field in your form regardless of name and there is no longer a limit on 
+  the number of attachments that can be processed; and, it will now process
+  flash forms and provide the proper return code.
+  
+  Notes on multiple attachments:
+  
+  This works the same as previous versions: the file is uploaded from your
+  user's computer to your server's temporary directory. PHPMailer-FE reads
+  the attachment from the server temporary directory and includes it in the
+  email sent to $recipient. Once PHPMailer-FE is finished processing, the
+  temporary directory is cleared (there is no copy of the attachment on the
+  server).
+  
+  With this new ability comes a few warnings. Please keep in mind that file
+  uploads to the server's temporary directory happen outside of PHPMailer-FE.
+  RFC1867 (and its follows like 2854) define the process of file uploads as
+  a browser based functionality. Processing scripts, therefore, do not get 
+  the data from the form until after the browser has completed all of its 
+  processing, including finishing the file uploads to your server.
+  
+  Since PHPMailer-FE has no limits on file uploads anymore, this poses some
+  interesting issues:
+  
+  1. Script execution time:
+     
+     To prevent script execution time limits from PHP.INI crashing the
+     process, we have added the following code to the function that converts
+     the uploaded files to email attachments:
+    
+    // extend execution time - note will not work if safe mode is enabled
+    $safeMode = ( @ini_get("safe_mode") == 'On' || @ini_get("safe_mode") === 1 ) ? TRUE : FALSE;
+    if ( $safeMode === FALSE ) {
+      set_time_limit(30 * count($_FILES));
+    }
+    
+    This sets maximum execution time to 30 seconds for each of the uploaded
+    files. Please note that the 30 seconds appears excessive - there are many
+    processes taking place with file uploads (including the building of the
+    email, and the transport of the email on send).
+    
+  2. Many email service providers have a limit of the total size of a mailbox
+     on their server and/or a maximum size for individual emails. For most, that
+     is 2 Mb for the entire mailbox. You'll have to consider this when you 
+     design your forms and allow for multiple file uploads.
+
+  Notes on flash forms:
+  
+  Until PHPMailer-FE version 4.0, the mail sending function did not return any
+  values. Testing for a successful send did not work for flash forms users. We
+  have modified the mail sending function so that it returns a value that can
+  be tested.
+  
+  Flash form users must specify either in the default.config.php or the form
+  specific config file the return code expected by their flash form. Here's
+  an example:
+  $_POST['flash_sent']              = 'sent=OK';
+  In this case, once PHPMailer-FE has finished processing, it will echo back
+  the 'sent=OK' to the flash form.
+  
+  Please note that if that if $_POST['flash_sent'] contains anything:
+  - the contents of that $_POST will be used as the return code to Flash
+  - PHPMailer-FE's redirect function will be disabled (anything sent after
+    the $_POST['flash_sent'] is echo'ed back to the flash form will cause
+    the flash form to fail.
+    
+  Other changes:
+  - can now specify sender email and name in the config files
+  - changed deprecated coding
+     
+  Enjoy this new version!
+  Andy
+
+Version 3.2.5 (January 21, 2009)
+- fixed the sending of environment variables with emails
+  - my mistakes, I had made an error in coding the environment variables 
+
+Version 3.2.4 (January 14, 2009)
+- NEW documentation created by PHPDocumentor
+- fixed error in form.tpl (form sample template)
+- added subject line for replies on success
+- added subject line for replies on fail
+- modified sample landing pages to support new subject capabilities
+- changed 'if ($require) {' to 'f ($required) {' (error reported on E_ALL)
+- changed 'if ( trim($attachment_temp) != '' && stristr($allowedFileTypes, $attachment_ext) === true ) {' 
+  to:
+  'if ( trim($attachment_temp) != '' && stristr($allowedFileTypes, $attachment_ext) !== false ) {'
+  to correct failed attachments (thanks to all who posted on Support Forum about this)
+
+Version 3.2.3 (withdrawn, not posted)
+
+Version 3.2.2 (November 24, 2008)
+- added lines 45-48 to block all URL based email hack attempts
+  - if detected, will display message
+    Sorry, nothing to display ...
+    ... and exit the script without any further processing
+  * we highly recommend that you check all of your <form > tags
+    and verify that they include a METHOD to POST and ACTION 
+    set to '/path/to/phpmailer-fe.php' - without any additional
+    query string items (that would trigger the URL based
+    form hack rejection). If you need to pass parameters to
+    PHPMailer-FE, use hidden input fields.
+    An example of a properly formed 
+    <form > tag is:
+    <form name="myform" method="POST" action="/path/to/phpmailer-fe.php">
+
+***** NOTE: this is the message posted on our support forum about this
+            issue:
+There has recently been quite a number of reported hack attempts using
+Form-To-Email scripts like PHPMailer-FE. A user of one of our products
+reported more than 20,000 emails were sent through his site using a
+competitive product.
+
+We log all form activity for one of our commercial customers and have
+noticed an increase in the URL form injection hacks.
+
+First, let me be clear, PHPMailer-FE and PHPMailer-FE PRO do not process
+any forms that have the method set to 'GET'. That means that all URL based
+email hacks will not work with PHPMailer-FE. PHPMailer-FE has NEVER
+allowed the 'GET' method (and never will).
+
+I do need to point out that if you have set a default $recipient in
+PHPMailer-FE, it is possible that the default recipient will receive ONE
+blank email with a default subject line.
+
+We highly recommend that you check all of your <form tags and verify that
+the METHOD is set to POST, and that the ACTION is set to
+'/path/to/phpmailer-fe.php'. For example:
+
+<form name="myform" method="POST" action="/path/to/phpmailer-fe.php">
+
+We posted a ZIP file containing two code snippets that could be used
+to block these URL-based email hacks. This version of PHPMailer-FE uses
+the first method.
+
+If you want to send yourself an email alert when these attacks take place
+download the zip from the forum: 
+http://www.worxware.com/forum/
+
+*/
+
+Version 3.2 (November 10, 2008)
+- modified near line 777 for users who do not use variable
+  $replyEmailOnSuccess (ie. most basic configuration)
+
+Version 3.1 (August 16, 2008)
+- modified code to detect 'refer' vs. form field of same name 
+  default is now form field of same name instead of environment 
+
+Version 3.1 (August 10, 2008)
+- fixed attachment issue (attachment sent, but no contents)
+- added tighter integration with PHPMailer (if used) to support
+  mail(), SMTP, sendmail, Qmail and all the features of those.
+
+Version 3.0.1 (August 06, 2008)
+- Our apologies. A user reported an undeclared array
+  that caused emails to be sent to the $recipient with
+  all contents truncated to a < (less than symbol). Fixed.
+

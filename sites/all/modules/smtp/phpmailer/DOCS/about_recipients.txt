@@ -1,0 +1,58 @@
+One frequent question is we receive is how to go about having different recipients receiving the same form. One example question is from "Gregg":
+
+--- SAMPLE QUESTION --------------
+
+hi Andy,
+
+Thanks a lot I will give that a try, is there no way to specify string replace in the actual html reply email? I'm making a site that is going to be used for an mlm business and its going to have website duplication so could be hundreds of the same site using the same form, so i would like to do a str_replace to replace who the email is coming from with their contact details like skype and stuff like that, which will all be stored in a database, there will also be different links in buttons on the side that will also be different every time. If you have a look here you might see what i mean. http://www.gosolutionx.com/mailing/replyemailsuccess.html
+
+Thanks for any help
+
+Gregg
+
+--- END SAMPLE QUESTION --------------
+
+In short, this user wants to send the person who filled in the form an email. This is pretty simple to do ... 
+
+Using the sample form as an example (form.html), all you need to do is edit the file:
+
+/_lib/form.config.php
+
+... these two lines:
+
+$_POST['replyEmailOnSuccess']     = 'form.replyemailsuccess.html';
+$_POST['subjectEmailOnSuccess']   = 'Email Submission succeeded';
+
+and then create a file:
+
+/_lib/form.replyemailsuccess.html
+
+that looks similar to the form itself. A pattern of how to do that is in the file "/_lib/replyemailsuccess.html" ... and a few notes on this:
+
+Have a look at the sample we include with the software. You will notice that there are no form tags, no input fields (or other form elements). In place, we have place holders - for example "{thanksMessage}". That looks for a form variable named "thanksMessage" and will do the string replacement automatically on the form submission. You can replace all the form variables with these place holders to get the form data the user typed in into the success reply email.
+
+Enjoy!
+
+Another example is a human resources employment application form. You may want to direct the form to different location managers based on a location drop down in the form. Here's how you accomplish that:
+
+Let's say you have a form called employmentapplication.html with a location drop down field containing two choices:
+New York (which returns NY) and Texas (which returns TX). We'll assume the field name is "location".
+
+In your /_lib/employmentapplication.config.php file, insert code that looks like:
+
+switch ( $_POST['Location'] ) {
+    case "NY":
+      $_POST['recipient'] = "nymanager@yourdomain.com";
+      break;
+    case "TX":
+      $_POST['recipient'] = "txmanager@yourdomain.com";
+      break;
+    default:
+      $_POST['recipient'] = "hrmanager@yourdomain.com";
+}
+
+That's it. Then based on the location selected by the user, the appropriate HR manager will receive the form submitted.
+
+Enjoy!
+
+Andy

@@ -1,0 +1,117 @@
+PHPMailer-FE = PHPMailer Formmail Edition.
+
+1. Unzip
+
+2. Edit the file phpmailer-fe.php. The script is well commented.
+   There are a number of settings that you will want to set as a
+   bare minimum.
+
+   - The first requires a decision from you. This script features
+   the ability to track the IP address and Remote Host of browsers
+   that attempt to use your form to send you spam. The way it works
+   is that the script will look at any fields that contain the
+   word "url" in the field name. If that field contains ANY
+   url, the entire submission will be classified as spam and
+   the user submitting the form will be banned from ever submitting
+   forms through this script again (on your site).
+   It's easy for you to use this feature and by-pass it if you want
+   people to submit URLs through your forms (just done use "url"
+   as part of the field name).
+   The default is false, meaning this features will NOT be used.
+   If you enable this feature (set to true), you will also need to
+   ensure that the file 'banlog.php' is writable.
+
+   - If you plan on using PHPMailer or PHPMailer-Lite as the transport
+   for your emails,set the variable:
+   $PHPMailerLocation = "class.phpmailer.php";
+   to the full location of your PHPMailer script. You need to put
+   class.phpmailer.php in the same directory as phpmailer-fe.php.
+   (note: download class.phpmailer.php from 
+   http://phpmailer.worxware.com/index.php?pg=sf&p=dl )
+   - OR -    $PHPMailerLiteLocation = "class.phpmailer-lite.php";
+   to the full location of your PHPMailer Lite script. You need to put
+   class.phpmailer-lite.php in the same directory as phpmailer-fe.php.
+   (note: download class.phpmailer-lite.php from 
+    http://phpmailer.worxware.com/index.php?pg=sf&p=dl )
+
+   - This script looks for a field name "recipient" as the email
+   address to send the form output to. You can set that in your form
+   (that does pose a risk, though, since the email address then
+   becomes accessible to email robots). A better option is to go to
+   change the script:
+
+   if (!$recipient) {
+     $recipient = 'codeworxtech@users.sourceforge.net';
+   } else {
+     $recipient = eregi_replace($email_bad_array,'',$recipient);
+     $recipient = str_replace(" ", "", $recipient);
+   }
+
+   to:
+
+   $recipient = "webmaster@mydomain.com";
+   (deleted three lines)
+   and set the email address to your choice.
+
+   - A new feature introduced in version 4.0.5 is the ability to 
+   restrict users from pressing the page refresh button on their 
+   browser and submitting the form data multiple times. In
+   phpmailer-fe.php, change this line:
+   $stopRefresh    = false; //true;
+   to 
+   $stopRefresh    = true;
+
+   -- those are the important ones ... however, take a few minutes
+   to read through the script. It is well commented and fairly easy
+   to figure out.
+
+2. Once you have the settings the way you want them, copy all the files
+   to your webserver. Example:
+   /formsout
+
+3. Setup your forms to use PHPMailer-FE as the "action". Example:
+   <form method="post" action="formsout/phpmailer-fe.php">
+
+   * see sample_form/form.html for a working example
+
+*  note: if you are using any of the extended features of phpmailer-fe.php
+   please use a hidden field to include the name of the form. Example:
+   <input type="hidden" value="form.html" name="referer">
+   - the purpose of this is that $_SERVER['HTTP_REFERER'] is not reliable and 
+     referer is required
+
+That is all it takes to protect your inbox from spammers that capitalize on
+your website contact forms to gather email addresses and user feedback.
+
+A quick note on Turing test or "captcha" utilities. There is a Turing
+test (or captcha utility) included with PHPMailer-FE. It is a server
+side solution ... that means that the validation does not occur until
+after your customer has submitted the data. If you want to use the
+Turing test, insert this in your form:
+<img src="worxturing.php"><br />
+Enter security code:<br />
+<input name="WorxTuringTest" id="WorxTuringTest"><br />
+PHPMailer-FE is set to use that form name (WorxTuringTest) to validate
+the user's input.
+
+Enjoy!
+Andy Prevost
+codeworxtech@users.sourceforge.net
+
+PS. Our company, Worx International Inc., handles outsourcing as well as custom
+development projects. We consult and work on projects small and large making
+the internet a safer place. Our passion is to engage the user in a compelling
+internet experience AND reduce the time to live with simple and effective
+software tools and components. Contact us today for any project.
+
+We do offer a Remote Forms Processing service. This service offers additional
+features:
+  - data validation in real time (data validation can include Turing test)
+  - CSV log of all submissions (can be sent daily, weekly, monthly)
+    - in addition to the emails
+  - forms and form processing are remote and on our highly secure servers
+  - use your forms, or we design for you
+  - forms hosted on our server also feature email address encoding (no email
+    harvesters)
+  - forms hosted on our server also will not be picked up by search engines
+  - Turing test functionality at the client and the server side

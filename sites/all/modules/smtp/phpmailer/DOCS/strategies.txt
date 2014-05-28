@@ -1,0 +1,200 @@
+FORMS STRATEGY:
+
+You can plan out a strategy for an individual form.
+
+Assumptions (for this document):
+- install your phpmailer-fe.php and class.phpmailer.php in the /proc directory. 
+- install your form.html form in the root (/) directory. 
+  note: the action of the form would be: action="proc/phpmailer-fe.php"
+* Windows users should make the necessary changes to the directory names likely
+  substituting /proc with /cgi-bin
+* note: if you are using any of the extended features of phpmailer-fe.php
+  please use a hidden field to include the name of the form. Example:
+  <input type="hidden" value="form.html" name="referer">
+  - the purpose of this is that $_SERVER['HTTP_REFERER'] is not reliable and 
+    referer is required
+
+You could then have
+/proc/default.config.php
+  - see the attached /sample_form/default.config.php
+  - this is was is called an External Configuration file. In this file, all of the form 
+    fields, all of the PHPMailer-FE settings and variables can be over-ridden - and
+    is loaded by default (if it exists) and applies to ALL forms processed by PHPMailer-FE.
+/proc/form.config.php
+  - see the attached /sample_form/form.config.php
+  - this is was is called an External Configuration file. In this file, all of the form 
+    fields, all of the PHPMailer-FE settings and variables can be over-ridden - and
+    totally unique only to this form
+/proc/form.tpl
+  - see the attached /sample_form/form.tpl
+  - this is an Email template file that will be sent to the site administrator ($recipient)
+    It can be totally customized and include any of the form fields as a tokenized scalar 
+    example: if a form field name is name="frmFirstname", you would call it from the
+    form.tpl template as {frmFirstname} - on execution, the form value will be substituted
+    customizing the form as you wish. You can use all the form field values, or only the
+    ones you want to email to the $recipient.
+    
+    ** Please note: there are two variables that are built into phpmailer-fe.php that 
+       you can access in your form template:
+       {IP} will substitute for the submitter's IP address
+       {HOST} will substitute for the submitter's Remote Host address (derived by PHP
+         from the IP address).    
+    
+/proc/replyemailfailed.html
+  - see the attached /sample_form/formreplyfail.tpl
+  - same description as the form.tpl, except it is an email to indicate the failure of
+    the form submission. It will be sent to the field containing the name="email" from
+    the form.html form. You can also use tokenzied scalars.
+/proc/replyemailsuccess.html
+  - see the attached /sample_form/formreplysuccess.tpl
+  - same description as the form.tpl, except it is an email to indicate the success of
+    the form submission. It will be sent to the field containing the name="email" from
+    the form.html form. You can also use tokenzied scalars.
+/formthankyou.html
+  - no example given, you can create in html, php or any other method to suit your needs.
+/formfail.html
+  - no example given, you can create in html, php or any other method to suit your needs.
+
+RECIPIENTS STRATEGY:
+
+Using PHPMailer-FE is a fairly simple process. Essentially all you need to do is to drop
+"phpmailer-fe.php" in a directory and use it as the action of your form.
+
+If you do this, you will need to specify all the main attributes directly in your form,
+especially who will be receiving the form data submitted by users.
+
+You would do that by putting in a field something like this:
+
+<input type="hidden" name="recipients" value="yourname@yourdomain.com">
+
+The problem with this technique is that it leaves your email address exposed and will
+likely be abused by email harvesters and automated form submission tools.
+
+We recommend that you put the recipient email address in the script, as detailed in the
+installation.txt file.
+
+USING FIXED EMAIL ADDRESS AND NAME FOR "FROM" FIELD:
+
+If you have many forms you are processing on your site, you may also wish to consider one
+aspect of using PHPMailer-FE. If you have created the form with a field called "email", the
+form will be sent to the recipient using that email address. That is a good strategy if the
+recipient plans on replying - the convenience is clear. However, if you have a lot of forms
+and a lot of submissions, you may want to use filters to sort the submissions and file them
+automatically.
+
+There is an option in PHPMailer-FE:
+$fixedFromEmail = ''; //'webmaster@thisdomain.com';
+$fixedFromName  = ''; //'Webmaster'
+
+These are disabled by default (meaning the form will come from the email address submitting 
+the form (or webmaster@yourdomain.com if the field "email" is not found). If you want to have 
+a consistent strategy, you can fill in these fields.
+
+REFERER ISSUE:
+
+There is an option to restrict your installation of PHPMailer-FE to the domains you list in 
+this field. You do need to keep in mind a few points:
+- HTTP-REFERER is not a reliable way of tracking the source of form submissions. HTTP-REFERER
+  can be spoofed
+- HTTP-REFERER is not passed at all by Internet Explorer is the link to the form or from the
+  form is through a Javascript link or through a Flash link
+
+DATA VALIDATION:
+
+PHPMailer-FE contains data validation for basic data types, including the latest four 
+character TLD domain names. (ie .MOBI). This is known as server-side validation. If you use 
+this features, please note that you will have to address the customer's return to fill in the 
+form to get valid data. If you only provide the back button in the browser, most of the data 
+will be lost when they attempt to go back (especially passwords, textareas, etc.). You may 
+wish to consider a combination of client side validation (with Javascript as an example).
+
+SPAM AND JUNK DATA:
+
+It is almost impossible to stop junk and spam from being sent through your forms. Our company, 
+Worx International Inc., has a commercial service offering Remote Forms Processing. We highly
+recommend Javascript as part of a strategy that includes client side and server side security.
+We do not want to enter into a debate about using Javascript vs not using Javascript. We will
+present our opinion here, you are free to agree or disagree and pursue whatever option you 
+wish. The rationale for using Javascript in securing your forms:
+1. Javascript is a known technology and contributes to security.
+   - the argument that Javascript can be compromised is not valid - so can all bank vaults, 
+     yet banks still use them. Javascript, like a vault, is PART of the overall strategy.
+2. We are not aware of a single bank that does not use Javascript as part of user 
+   authentication and data validation on their websites
+3. Hotmail (MSN Live Login) will not even display the login screen unless Javascript is 
+   enabled on the server - Microsoft is not the only corporation with this strategy, it is 
+   pervasive on the internet.
+
+AUTO-RESPONDER:
+
+PHPMailer-FE is also a robust Auto-Responder that supports sending an attachment to your users.
+If you want to use it purely as an auto-responder and and not send the form results to 
+$recipient, use the setting
+$useAsAutoResponder = true; 
+
+You can still use PHPMailer-FE as an Auto-Responder with the setting set to false, the only
+difference is that with a value of false, the $recipient will get the form contents. Also note
+that you can add any attachment in the form you display on your site to receive attachments
+from your users ... this AUTO-RESPONDER capability lets you store files on your server to
+send to your users. The way to use that is to put two fields in your "form".config.php file:
+
+$_POST['attach_local_name'] = "/path/to/document.pdf";
+$_POST['attach_local_type'] = "application/pdf";
+
+(you can get a listing of mime types at http://www.webmaster-toolkit.com/mime-types.shtml).
+
+MAILER TYPE (optional, if you use class.phpmailer.php)
+
+If you use class.phpmailer.php as the mail transport (instead of the PHP mail() default), you
+can specify several additional options:
+
+$_POST['Mailer'] defines the type of mailer that you want to use. The name of the field matches
+the naming convention used in class.phpmailer.php and the options are the same (smtp, sendmail,
+or qmail). Default is mail() if not set. Note capitalization of the form field name is important.
+
+The rest of the fields for MAILER TYPE are all options if you select "smtp" for 
+$_POST['Mailer']:
+
+$_POST['Host'] defines the hostname of your SMTP server. If not defined, class.phpmailer.php
+will assume "localhost".
+
+$_POST['Post'] defines the port you want to use. Default is 25 - if that is the same as your
+SMTP server, you do not have to set this. Primarily used for "public" SMTP servers like 
+Gmail (see http://phpmailer.worxware.com/index.php?pg=tip_srvrs for a list of public
+servers and their settings requirements).
+
+$_POST['Helo'] defines the SMTP Helo string. If not defined, defaults to your $_POST['Host'] 
+setting.
+
+$_POST['SMTPAuth'] defines whether or not your SMTP server requires user authentication prior
+to sending mail. Options are true or false. Default is false.
+
+$_POST['Username'] defines the username if $_POST['SMTPAuth'] is true. Not used otherwise.
+
+$_POST['Password'] defines the password if $_POST['SMTPAuth'] is true. Not used otherwise.
+
+$_POST['Timeout'] defines the SMTP server timeout in seconds. NOTE: This function will not work
+on Windows servers.
+
+$_POST['SMTPKeepAlive'] choices are true or false, defaults to false. Prevents the SMTP 
+connection from being closed after each mail sending. If this is set to true, to close the 
+connection requires an explicit call to SmtpClose().
+
+---
+
+We use Javascript as a gatekeeper, similar to Microsoft's strategy. The forms that we host 
+will not even display if Javascript is not enabled. Checking for Javascript being enabled 
+occurs at the form load and at the submit stage. If you check our forms, the action is not 
+even specified ... that is inserted after the user clicks on the submit button IF Javascript 
+is enabled. That HELPS to ensure that the form validation we have in Javascript gets executed
+(also at the time of pressing the submit button). We also validate in one step: all errors are
+reported in one single Alert window. The customer does not leave the form until all the data 
+is validated to the form's standards and no data is lost through the forward and back movement
+of the data to a subsequent page.
+
+As noted previously, Javascript can be tricked. PHPMailer-FE's data validation is a fail-safe.
+If the data is still not valid as it hits PHPMailer-FE, the email is not sent, and descriptive
+messages are displayed.
+
+Enjoy!
+Andy Prevost.

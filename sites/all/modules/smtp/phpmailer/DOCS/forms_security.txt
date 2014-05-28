@@ -1,0 +1,81 @@
+Our company, Worx International Inc., has been researching PHP server side
+validation. This research was initiated because client side validation simply
+doesn't work consistently. All client side validation is based on Javascript.
+That applies as well to Ajax, and Javascript Frameworks (like Mootools,
+jQuery, etc.). The problem with client side validation is that to deliver
+garbage to your inbox and hack your forms, all users have to do is disable
+Javascript in their browser. There are ways around this such as using
+Javascript to echo the Submit button (ie. no Javascript, no Submit button),
+but these are obtrusive and counter-productive for those users who
+legitimately do not have Javascript or disable Javascript for personal
+reasons. The only solution that is effective and works all the time is a
+server side validation strategy.
+
+We've found a number of very good server side validation products. Here's a
+summary of the PHP scripts we found:
+
+----------------
+
+Autoform - http://www.greaterscope.net/projects/Autoform
+License: MIT.
+
+Recently I have been working with the developer of PHP Autoform.
+
+Autoform is quite unique ... it is both a form generator, and validates user
+input on the server-side.
+
+It works quite well with PHPMailer-FE and has unlimited potential to secure
+your forms and eliminate, or greatly minize, spam and junk mail from your
+website forms.
+
+To show the capabilities of Autoform, I have put up several sample forms of my
+own, plus the example forms from the Autoform package. Please have a look at:
+
+http://www.worxware.com/autoform/
+
+... please note this are very basic sample pages to show Autoform in action. 
+
+I also have several modifications and a client-side validator running with the
+samples. If you have need of customization to Autoform, I would encourage you
+to contact the developer through the website
+http://www.greaterscope.net/projects/Autoform.
+
+----------------
+
+HTML Form - http://stefangabos.blogspot.com
+License: unknown, but LICENSE file says you can use it for personal or
+commercial applications
+License note 1: the author includes a BUT ... only if you send him the link
+where you are using the code
+License note 2: the software is distributed with X Templates (LGPL/BSD), and
+XSS Clean (from the PHP Code Igniter product, with permission)
+
+HTML Form is the most robust of all the products tested. It is both a form
+generator, and validates user input on the server side. It is unique in the
+products tested that it also uses X templates that can render forms from very
+basic to extremely complex layouts.
+
+HTML Form is effective. I have not found any condition in which HTML form does
+not work. 
+
+----------------
+
+.... and a quick note about clonefish: we have not included clonefish here
+because the license type for the free cannot be determined. If we are not able
+to determine our rights in using the software, it isn't worth downloading. You
+may wish to look into it, though at http://www.phpformclass.com/.
+
+----------------
+
+Summary:
+
+As a server-side validators for forms, these product should have your
+interest. It's the ideal way of dealing with hackers and spammers accessing
+your forms for their dirty payloads and filling your inbox with garbage. The
+beauty of this solution is that regardless of the user's Javascript settings
+in their browser, validation takes place at the server BEFORE the form gets
+processed.
+
+Enjoy!
+Andy
+----------------

@@ -1,0 +1,18 @@
+This document is for flash forms users.
+
+You have the option when you create your flash forms to define a return code after the data is submitted. The default for the return code is "OK" if the data was processed successfully and "failed" if not processed successfully. You can also modify the default to look for any return code on successful completion. Note that any other code returned (by PHPMailer-FE or any other post-process) is evaluated as failed by Flash.
+
+Since version 4.0, PHPMailer-FE has the ability to pass a return code of your choice back to the Flash form so that Flash can display the successful submission screen you created.
+
+PHPMailer-FE looks for a $_POST variable (a form field name) that is "flash_sent". You can have that field in your flash form as a hidden field, or in your default.config.php or form.config.php file. An example would be, in form.config.php:
+
+$_POST['flash_sent']              = 'sent=OK'; // USED AS THE RETURN CODE FOR FLASH FORMS
+
+where 'sent=OK' is the return code Flash is expecting.
+
+One caution:
+
+PHPMailer-FE also has "plug-in" support. The plug-in functionality is the last process performed by PHPMailer-FE. If you write a custom plug-in, DO NOT "echo" or "print" anything if you use Flash forms. The reason for this is that the return code Flash is looking for is echo'ed to Flash ... anything echo'ed (or printed) after that point is incremental to the return code - Flash will interpret that as a failed return code.
+
+Enjoy!
+Andy

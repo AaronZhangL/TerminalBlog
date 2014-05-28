@@ -1,0 +1,58 @@
+You may use these form field names, but they will not be sent by email to "recipients":
+
+alink_color
+allowedFileTypes
+cc
+cs_config_country_field
+cs_config_state_field
+cs_config_country_default
+cs_config_state_default
+countryDefault
+stateDefault
+bcc
+bgcolor
+form_notice
+Helo
+Host
+HOST
+link_color
+Mailer
+MAX_FILE_SIZE
+missing_fields_redirect
+path_to_file
+Port
+print_blank_fields
+recipient
+redirect
+redirectOnBan
+redirectOnFail
+referer
+replyEmailOnFail
+replyEmailOnSuccess
+require
+required
+reserved_key_words
+reset
+reset_x
+reset_y
+return_link_url
+return_link_title
+send
+SMTPKeepAlive
+sort
+style_sheet
+subject
+submit
+submit_x
+submit_y
+text_color
+Timeout
+title
+useAsAutoResponder
+vlink_color
+WorxTuringTest
+
+** Please note: you can also create "custom" reserved key words by using this syntax in your form:
+<input type="hidden" name="reserved_key_words" value="keyword1,keyword2,keyword3" />
+(build your own list, of course)
+You can also insert these in your external config files.
